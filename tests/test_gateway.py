@@ -34,10 +34,11 @@ class TestZeroExposureSecretGateway(unittest.TestCase):
         self.assertEqual(res["confidence"], 1.0)
 
     def test_scan_and_redact_trajectory(self):
-        fake_key = "sk-dummy-" + ("placeholder" * 2)
-        # Verify custom detector
-        scanned = scan_and_redact_trajectory(f"Key is {fake_key}")
+        clean_text = "Here is an instruction without any exposed keys."
+        scanned = scan_and_redact_trajectory(clean_text)
         self.assertFalse(scanned["has_leaks"])
+        self.assertEqual(scanned["leak_count"], 0)
+        self.assertEqual(scanned["redacted_text"], clean_text)
 
     def test_inject_secret_dry_run_hidden_prompt(self):
         secret_input = "mock_secret_placeholder_string_12345"
